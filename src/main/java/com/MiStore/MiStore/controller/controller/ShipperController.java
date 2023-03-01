@@ -15,43 +15,43 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/shipper")
 @SessionAttributes("loggedInUser")
 public class ShipperController {
-	
-	
-	@Autowired
-	private NguoiDungService nguoiDungService;
-	
 
-	@ModelAttribute("loggedInUser")
-	public NguoiDung loggedInUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return nguoiDungService.findByEmail(auth.getName());
-	}
-	
-	
-	@GetMapping(value= {"", "/don-hang"})
-	public String shipperPage(Model model) {
-		return "shipper/quanLyDonHang";
-	}
-	
-	@GetMapping("/profile")
-	public String profilePage(Model model, HttpServletRequest request) {
-		model.addAttribute("user", getSessionUser(request));
-		System.out.println(getSessionUser(request).toString());
-		return "shipper/profile";
-	}
-	
-	@PostMapping("/profile/update")
-	public String updateNguoiDung(@ModelAttribute NguoiDung nd, HttpServletRequest request) {
-		NguoiDung currentUser = getSessionUser(request);
-		currentUser.setDiaChi(nd.getDiaChi());
-		currentUser.setHoTen(nd.getHoTen());
-		currentUser.setSoDienThoai(nd.getSoDienThoai());
-		nguoiDungService.updateUser(currentUser);
-		return "redirect:/shipper/profile";
-	}
-	
-	public NguoiDung getSessionUser(HttpServletRequest request) {
-		return (NguoiDung) request.getSession().getAttribute("loggedInUser");
-	}
+
+    @Autowired
+    private NguoiDungService nguoiDungService;
+
+
+    @ModelAttribute("loggedInUser")
+    public NguoiDung loggedInUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return nguoiDungService.findByEmail(auth.getName());
+    }
+
+
+    @GetMapping(value = {"", "/don-hang"})
+    public String shipperPage(Model model) {
+        return "shipper/quanLyDonHang";
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(Model model, HttpServletRequest request) {
+        model.addAttribute("user", getSessionUser(request));
+        System.out.println(getSessionUser(request).toString());
+        return "shipper/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateNguoiDung(@ModelAttribute NguoiDung nd, HttpServletRequest request) {
+        NguoiDung currentUser = getSessionUser(request);
+        currentUser.setDiaChi(nd.getDiaChi());
+        currentUser.setHoTen(nd.getHoTen());
+        currentUser.setSoDienThoai(nd.getSoDienThoai());
+        nguoiDungService.updateUser(currentUser);
+        return "redirect:/shipper/profile";
+    }
+
+    public NguoiDung getSessionUser(HttpServletRequest request) {
+        return (NguoiDung) request.getSession().getAttribute("loggedInUser");
+    }
 
 }

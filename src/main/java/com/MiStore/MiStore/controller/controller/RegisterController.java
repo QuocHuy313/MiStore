@@ -25,27 +25,27 @@ public class RegisterController {
 
     @Autowired
     private NguoiDungValidator nguoiDungValidator;
-	
-	
-	@GetMapping("/register")
-	public String registerPage(Model model) {
-		model.addAttribute("newUser", new NguoiDung());
-		return "client/register";
-	}
-	
-	@PostMapping("/register")
-	public String registerProcess(@ModelAttribute("newUser") @Valid NguoiDung nguoiDung, BindingResult bindingResult, Model model) {
-	    
-		nguoiDungValidator.validate(nguoiDung, bindingResult);
-		
+
+
+    @GetMapping("/register")
+    public String registerPage(Model model) {
+        model.addAttribute("newUser", new NguoiDung());
+        return "client/register";
+    }
+
+    @PostMapping("/register")
+    public String registerProcess(@ModelAttribute("newUser") @Valid NguoiDung nguoiDung, BindingResult bindingResult, Model model) {
+
+        nguoiDungValidator.validate(nguoiDung, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "client/register";
         }
-        
+
         nguoiDungService.saveUserForMember(nguoiDung);
 
         securityService.autologin(nguoiDung.getEmail(), nguoiDung.getConfirmPassword());
 
         return "redirect:/";
-	}
+    }
 }

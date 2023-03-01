@@ -24,74 +24,73 @@ import java.util.List;
 @RequestMapping("/")
 
 public class ClientAccountController {
-	
-	@Autowired
-	private SanPhamService sanPhamService;
 
-	@Autowired
-	private NguoiDungService nguoiDungService;
-	
-	@Autowired
-	private DonHangService donHangService;
-	
-	
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private SanPhamService sanPhamService;
 
-	@ModelAttribute("loggedInUser")
-	public NguoiDung loggedInUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return nguoiDungService.findByEmail(auth.getName());
-	}
+    @Autowired
+    private NguoiDungService nguoiDungService;
 
-	public NguoiDung getSessionUser(HttpServletRequest request) {
-		return (NguoiDung) request.getSession().getAttribute("loggedInUser");
-	}
-	
-	@GetMapping("/account")
-	public String accountPage(HttpServletRequest res, Model model) {
-		NguoiDung currentUser = getSessionUser(res);
-		model.addAttribute("user", currentUser);
-		List<DonHang> list = Lists.reverse(donHangService.getDonHangByNguoiDung(currentUser));
-		model.addAttribute("list",list);
-		return "client/account";
-	}
-	
-	@GetMapping("/changeInformation")
-	public String clientChangeInformationPage(HttpServletRequest res,Model model) {
-		NguoiDung currentUser = getSessionUser(res);
-		model.addAttribute("user", currentUser);
-		return "client/information";
-	}
+    @Autowired
+    private DonHangService donHangService;
 
-	@GetMapping("/changePassword")
-	public String clientChangePasswordPage() {
-		return "client/passwordChange";
-	}
-	
-	@PostMapping("/updateInfo")
-	@ResponseBody
-	public ResponseObject commitChange(HttpServletRequest res, @RequestBody NguoiDung ng) {
-		NguoiDung currentUser = getSessionUser(res);
-		currentUser.setHoTen(ng.getHoTen());
-		currentUser.setSoDienThoai(ng.getSoDienThoai());
-		currentUser.setDiaChi(ng.getDiaChi());
-		nguoiDungService.updateUser(currentUser);
-		return new ResponseObject();
-	}
-	
-	@PostMapping("/updatePassword")
-	@ResponseBody
-	public ResponseObject passwordChange(HttpServletRequest res,@RequestBody PasswordDTO dto) {
-		NguoiDung currentUser = getSessionUser(res);
-		if (!passwordEncoder.matches( dto.getOldPassword(), currentUser.getPassword())) {
-			ResponseObject re = new ResponseObject();
-			re.setStatus("old");
-			return re;
-		}
-		nguoiDungService.changePass(currentUser, dto.getNewPassword());
-		return new ResponseObject();
-	}
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @ModelAttribute("loggedInUser")
+    public NguoiDung loggedInUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return nguoiDungService.findByEmail(auth.getName());
+    }
+
+    public NguoiDung getSessionUser(HttpServletRequest request) {
+        return (NguoiDung) request.getSession().getAttribute("loggedInUser");
+    }
+
+    @GetMapping("/account")
+    public String accountPage(HttpServletRequest res, Model model) {
+        NguoiDung currentUser = getSessionUser(res);
+        model.addAttribute("user", currentUser);
+        List<DonHang> list = Lists.reverse(donHangService.getDonHangByNguoiDung(currentUser));
+        model.addAttribute("list", list);
+        return "client/account";
+    }
+
+    @GetMapping("/changeInformation")
+    public String clientChangeInformationPage(HttpServletRequest res, Model model) {
+        NguoiDung currentUser = getSessionUser(res);
+        model.addAttribute("user", currentUser);
+        return "client/information";
+    }
+
+    @GetMapping("/changePassword")
+    public String clientChangePasswordPage() {
+        return "client/passwordChange";
+    }
+
+    @PostMapping("/updateInfo")
+    @ResponseBody
+    public ResponseObject commitChange(HttpServletRequest res, @RequestBody NguoiDung ng) {
+        NguoiDung currentUser = getSessionUser(res);
+        currentUser.setHoTen(ng.getHoTen());
+        currentUser.setSoDienThoai(ng.getSoDienThoai());
+        currentUser.setDiaChi(ng.getDiaChi());
+        nguoiDungService.updateUser(currentUser);
+        return new ResponseObject();
+    }
+
+    @PostMapping("/updatePassword")
+    @ResponseBody
+    public ResponseObject passwordChange(HttpServletRequest res, @RequestBody PasswordDTO dto) {
+        NguoiDung currentUser = getSessionUser(res);
+        if (!passwordEncoder.matches(dto.getOldPassword(), currentUser.getPassword())) {
+            ResponseObject re = new ResponseObject();
+            re.setStatus("old");
+            return re;
+        }
+        nguoiDungService.changePass(currentUser, dto.getNewPassword());
+        return new ResponseObject();
+    }
 
 }

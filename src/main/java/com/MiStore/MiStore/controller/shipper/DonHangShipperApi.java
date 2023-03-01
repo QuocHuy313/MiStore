@@ -19,63 +19,63 @@ import java.util.Date;
 @RequestMapping("/api/shipper/don-hang")
 public class DonHangShipperApi {
 
-	@Autowired
-	private DonHangService donHangService;
+    @Autowired
+    private DonHangService donHangService;
 
-	@Autowired
-	private NguoiDungService nguoiDungService;
+    @Autowired
+    private NguoiDungService nguoiDungService;
 
-	@GetMapping("/all")
-	public Page<DonHang> getDonHangByFilter(@RequestParam(defaultValue = "1") int page, @RequestParam String trangThai,
-											@RequestParam String tuNgay, @RequestParam String denNgay, @RequestParam long idShipper)
-			throws ParseException {
+    @GetMapping("/all")
+    public Page<DonHang> getDonHangByFilter(@RequestParam(defaultValue = "1") int page, @RequestParam String trangThai,
+                                            @RequestParam String tuNgay, @RequestParam String denNgay, @RequestParam long idShipper)
+            throws ParseException {
 
-		SearchDonHangObject object = new SearchDonHangObject();
-		object.setDenNgay(denNgay);
-		object.setTrangThaiDon(trangThai);
-		object.setTuNgay(tuNgay);
+        SearchDonHangObject object = new SearchDonHangObject();
+        object.setDenNgay(denNgay);
+        object.setTrangThaiDon(trangThai);
+        object.setTuNgay(tuNgay);
 
-		NguoiDung shipper = nguoiDungService.findById(idShipper);
-		Page<DonHang> listDonHang = donHangService.findDonHangByShipper(object, page, 6, shipper);
-		return listDonHang;
-	}
+        NguoiDung shipper = nguoiDungService.findById(idShipper);
+        Page<DonHang> listDonHang = donHangService.findDonHangByShipper(object, page, 6, shipper);
+        return listDonHang;
+    }
 
-	@GetMapping("/{id}")
-	public DonHang getDonHangById(@PathVariable long id) {
-		return donHangService.findById(id);
-	}
+    @GetMapping("/{id}")
+    public DonHang getDonHangById(@PathVariable long id) {
+        return donHangService.findById(id);
+    }
 
-	@PostMapping("/update")
-	public void capNhatTrangThaiDonHang(@RequestBody CapNhatDonHangShipper capNhatDonHangShipper) {
-		DonHang donHang = donHangService.findById(capNhatDonHangShipper.getIdDonHang());
+    @PostMapping("/update")
+    public void capNhatTrangThaiDonHang(@RequestBody CapNhatDonHangShipper capNhatDonHangShipper) {
+        DonHang donHang = donHangService.findById(capNhatDonHangShipper.getIdDonHang());
 
-		for (ChiTietDonHang chiTiet : donHang.getDanhSachChiTiet()) {
-			for (CapNhatDonHangShipper.CapNhatChiTietDon chiTietCapNhat : capNhatDonHangShipper
-					.getDanhSachCapNhatChiTietDon()) {
-				if (chiTiet.getId() == chiTietCapNhat.getIdChiTiet()) {
-					chiTiet.setSoLuongNhanHang(chiTietCapNhat.getSoLuongNhanHang());
-				}
-			}
-		}
+        for (ChiTietDonHang chiTiet : donHang.getDanhSachChiTiet()) {
+            for (CapNhatDonHangShipper.CapNhatChiTietDon chiTietCapNhat : capNhatDonHangShipper
+                    .getDanhSachCapNhatChiTietDon()) {
+                if (chiTiet.getId() == chiTietCapNhat.getIdChiTiet()) {
+                    chiTiet.setSoLuongNhanHang(chiTietCapNhat.getSoLuongNhanHang());
+                }
+            }
+        }
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
 
-			String dateStr = format.format(new Date());
-			Date date = format.parse(dateStr);
-			donHang.setNgayNhanHang(date);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+            String dateStr = format.format(new Date());
+            Date date = format.parse(dateStr);
+            donHang.setNgayNhanHang(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-		donHang.setTrangThaiDonHang("Chờ duyệt");
+        donHang.setTrangThaiDonHang("Chờ duyệt");
 
-		String ghiChu = capNhatDonHangShipper.getGhiChuShipper();
+        String ghiChu = capNhatDonHangShipper.getGhiChuShipper();
 
-		if (!ghiChu.equals("")) {
-			donHang.setGhiChu("Ghi chú shipper: \n" + capNhatDonHangShipper.getGhiChuShipper());
-		}
-		donHangService.save(donHang);
+        if (!ghiChu.equals("")) {
+            donHang.setGhiChu("Ghi chú shipper: \n" + capNhatDonHangShipper.getGhiChuShipper());
+        }
+        donHangService.save(donHang);
 
-	}
+    }
 }
