@@ -25,8 +25,6 @@ import java.util.List;
 
 public class ClientAccountController {
 
-    @Autowired
-    private SanPhamService sanPhamService;
 
     @Autowired
     private NguoiDungService nguoiDungService;

@@ -17,59 +17,59 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/nhan-hieu")
 public class HangSXApi {
 
-	@Autowired
-	private HangSanXuatService service;
+    @Autowired
+    private HangSanXuatService service;
 
-	@GetMapping("/all")
-	public Page<HangSanXuat> getAllHangSanXuat(@RequestParam(defaultValue = "1") int page) {
-		return service.getALlHangSX(page-1,6);
-	}
+    @GetMapping("/all")
+    public Page<HangSanXuat> getAllHangSanXuat(@RequestParam(defaultValue = "1") int page) {
+        return service.getALlHangSX(page - 1, 6);
+    }
 
-	@GetMapping("/{id}")
-	public HangSanXuat getHangSanXuatById(@PathVariable long id) {
-		return service.getHSXById(id);
-	}
+    @GetMapping("/{id}")
+    public HangSanXuat getHangSanXuatById(@PathVariable long id) {
+        return service.getHSXById(id);
+    }
 
-	@PostMapping(value = "/save")
-	public ResponseObject addHangSanXuat(@RequestBody @Valid HangSanXuat newHangSanXuat, BindingResult result) {
+    @PostMapping(value = "/save")
+    public ResponseObject addHangSanXuat(@RequestBody @Valid HangSanXuat newHangSanXuat, BindingResult result) {
 
-		ResponseObject ro = new ResponseObject();
+        ResponseObject ro = new ResponseObject();
 
-		if (result.hasErrors()) {
-			Map<String, String> errors = result.getFieldErrors().stream()
-					.collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-			ro.setErrorMessages(errors);
-			ro.setStatus("fail");
-		} else {
-			service.save(newHangSanXuat);
-			ro.setData(newHangSanXuat);
-			ro.setStatus("success");
-		}
-		return ro;
-	}
+        if (result.hasErrors()) {
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            ro.setErrorMessages(errors);
+            ro.setStatus("fail");
+        } else {
+            service.save(newHangSanXuat);
+            ro.setData(newHangSanXuat);
+            ro.setStatus("success");
+        }
+        return ro;
+    }
 
-	@PutMapping(value = "/update")
-	public ResponseObject updateHangSanXuat(@RequestBody @Valid HangSanXuat editHangSanXuat, BindingResult result) {
+    @PutMapping(value = "/update")
+    public ResponseObject updateHangSanXuat(@RequestBody @Valid HangSanXuat editHangSanXuat, BindingResult result) {
 
-		ResponseObject ro = new ResponseObject();
-		if (result.hasErrors()) {
-			Map<String, String> errors = result.getFieldErrors().stream()
-					.collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-			ro.setErrorMessages(errors);
-			ro.setStatus("fail");
-			errors = null;
-		} else {
-			service.update(editHangSanXuat);
-			ro.setData(editHangSanXuat);
-			ro.setStatus("success");
-		}
+        ResponseObject ro = new ResponseObject();
+        if (result.hasErrors()) {
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            ro.setErrorMessages(errors);
+            ro.setStatus("fail");
+            errors = null;
+        } else {
+            service.update(editHangSanXuat);
+            ro.setData(editHangSanXuat);
+            ro.setStatus("success");
+        }
 
-		return ro;
-	}
+        return ro;
+    }
 
-	@DeleteMapping("/delete/{id}")
-	public String deleteHangSanXuat(@PathVariable long id) {
-		service.deleteById(id);
-		return "OK !";
-	}
+    @DeleteMapping("/delete/{id}")
+    public String deleteHangSanXuat(@PathVariable long id) {
+        service.deleteById(id);
+        return "OK !";
+    }
 }

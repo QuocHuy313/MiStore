@@ -20,79 +20,77 @@ import java.util.stream.Collectors;
 @RequestMapping("api/danh-muc")
 public class DanhMucApi {
 
-	@Autowired
-	private DanhMucService danhMucService;
+    @Autowired
+    private DanhMucService danhMucService;
 
-	@GetMapping("/all")
-	public Page<DanhMuc> getAllDanhMuc(@RequestParam(defaultValue = "1") int page) {
-		return danhMucService.getAllDanhMucForPageable(page-1,6);
-	}
-	
-	@GetMapping("/allForReal")
-	public List<DanhMuc> getRealAllDanhMuc() {
-		return danhMucService.getAllDanhMuc();
-	}
+    @GetMapping("/all")
+    public Page<DanhMuc> getAllDanhMuc(@RequestParam(defaultValue = "1") int page) {
+        return danhMucService.getAllDanhMucForPageable(page - 1, 6);
+    }
 
-	@GetMapping("/{id}")
-	public DanhMuc getDanhMucById(@PathVariable long id) {
-		return danhMucService.getDanhMucById(id);
-	}
+    @GetMapping("/allForReal")
+    public List<DanhMuc> getRealAllDanhMuc() {
+        return danhMucService.getAllDanhMuc();
+    }
 
-	@PostMapping(value = "/save")
-	public ResponseObject addDanhMuc(@RequestBody @Valid DanhMuc newDanhMuc, BindingResult result, HttpServletRequest request) {
-		
-		ResponseObject ro = new ResponseObject();
-		
-		if (result.hasErrors()) {
+    @GetMapping("/{id}")
+    public DanhMuc getDanhMucById(@PathVariable long id) {
+        return danhMucService.getDanhMucById(id);
+    }
 
-			Map<String, String> errors = result.getFieldErrors().stream()
-					.collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-			ro.setErrorMessages(errors);
-			
-			List<String> keys = new ArrayList<String>(errors.keySet());			
-			for (String key: keys) {
-			    System.out.println(key + ": " + errors.get(key));
-			}
-			
-			ro.setStatus("fail");
-			errors = null;
-			;
-		} else {
-			danhMucService.save(newDanhMuc);
-			ro.setData(newDanhMuc);
-			ro.setStatus("success");
-		}
-		return ro;
-	}
-	
-	@PutMapping(value = "/update")
-	public ResponseObject updateDanhMuc(@RequestBody @Valid DanhMuc editDanhMuc, BindingResult result, HttpServletRequest request) {
-		
-		ResponseObject ro = new ResponseObject();		
-		if (result.hasErrors()) {
+    @PostMapping(value = "/save")
+    public ResponseObject addDanhMuc(@RequestBody @Valid DanhMuc newDanhMuc, BindingResult result, HttpServletRequest request) {
 
-			Map<String, String> errors = result.getFieldErrors().stream()
-					.collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-			ro.setErrorMessages(errors);
-			ro.setStatus("fail");
-			errors = null;
-			
-		} else {
-			danhMucService.update(editDanhMuc);
-			ro.setData(editDanhMuc);
-			ro.setStatus("success");
-		}
-		
-		return ro;
-	}
+        ResponseObject ro = new ResponseObject();
 
+        if (result.hasErrors()) {
+
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            ro.setErrorMessages(errors);
+
+            List<String> keys = new ArrayList<String>(errors.keySet());
+            for (String key : keys) {
+                System.out.println(key + ": " + errors.get(key));
+            }
+
+            ro.setStatus("fail");
+            errors = null;
+        } else {
+            danhMucService.save(newDanhMuc);
+            ro.setData(newDanhMuc);
+            ro.setStatus("success");
+        }
+        return ro;
+    }
+
+    @PutMapping(value = "/update")
+    public ResponseObject updateDanhMuc(@RequestBody @Valid DanhMuc editDanhMuc, BindingResult result, HttpServletRequest request) {
+
+        ResponseObject ro = new ResponseObject();
+        if (result.hasErrors()) {
+
+            Map<String, String> errors = result.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            ro.setErrorMessages(errors);
+            ro.setStatus("fail");
+            errors = null;
+
+        } else {
+            danhMucService.update(editDanhMuc);
+            ro.setData(editDanhMuc);
+            ro.setStatus("success");
+        }
+
+        return ro;
+    }
 
 
-	@DeleteMapping("/delete/{id}")
-	public String deleteDanhMuc(@PathVariable long id, HttpServletRequest request) {
-		danhMucService.deleteById(id);
-		request.getSession().setAttribute("listDanhMuc", danhMucService.getAllDanhMuc());;
-		return "OK !";
-	}
+    @DeleteMapping("/delete/{id}")
+    public String deleteDanhMuc(@PathVariable long id, HttpServletRequest request) {
+        danhMucService.deleteById(id);
+        request.getSession().setAttribute("listDanhMuc", danhMucService.getAllDanhMuc());
+        return "OK !";
+    }
 
 }
